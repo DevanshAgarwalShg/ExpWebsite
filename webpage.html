@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Web App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        input {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #2575fc;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2575fc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background: #6a11cb;
+            transform: scale(1.02);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .hidden {
+            display: none;
+        }
+        p {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+        p button {
+            background: none;
+            border: none;
+            color: #2575fc;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: underline;
+        }
+        p button:hover {
+            color: #6a11cb;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="register-page">
+        <h2>Create Account</h2>
+        <input type="text" id="reg-username" placeholder="Enter Username">
+        <input type="email" id="reg-email" placeholder="Enter Email">
+        <input type="password" id="reg-password" placeholder="Enter Password">
+        <button onclick="register()">Register</button>
+        <p>Already have an account? <button onclick="showLoginPage()">Login</button></p>
+    </div>
+
+    <div class="container hidden" id="login-page">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Enter Username">
+        <input type="password" id="password" placeholder="Enter Password">
+        <button onclick="login()">Login</button>
+        <p>Don't have an account? <button onclick="showRegisterPage()">Register</button></p>
+    </div>
+
+    <div class="container hidden" id="user-info-page">
+        <h2>Welcome, <span id="user-name-display"></span>!</h2>
+        <input type="text" id="user-email" placeholder="Enter Email" value="">
+        <input type="text" id="user-bio" placeholder="Enter Bio">
+        <button onclick="goToProfile()">Go to Profile</button>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="container hidden" id="profile-page">
+        <h2>Your Profile</h2>
+        <p><strong>Name:</strong> <span id="profile-name"></span></p>
+        <p><strong>Email:</strong> <span id="profile-email"></span></p>
+        <p><strong>Bio:</strong> <span id="profile-bio"></span></p>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        let userData = {};
+
+        function register() {
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+
+            if (username && email && password) {
+                userData = { username, email, password, bio: "" };
+                alert('Registration successful! Please login.');
+                showLoginPage();
+            } else {
+                alert('Please fill out all fields.');
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === userData.username && password === userData.password) {
+                document.getElementById('user-name-display').innerText = userData.username;
+                document.getElementById('user-email').value = userData.email;
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('user-info-page').classList.remove('hidden');
+            } else {
+                alert('Invalid username or password.');
+            }
+        }
+
+        function goToProfile() {
+            userData.email = document.getElementById('user-email').value;
+            userData.bio = document.getElementById('user-bio').value;
+
+            document.getElementById('profile-name').innerText = userData.username;
+            document.getElementById('profile-email').innerText = userData.email;
+            document.getElementById('profile-bio').innerText = userData.bio;
+
+            document.getElementById('user-info-page').classList.add('hidden');
+            document.getElementById('profile-page').classList.remove('hidden');
+        }
+
+        function logout() {
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('reg-username').value = '';
+            document.getElementById('reg-email').value = '';
+            document.getElementById('reg-password').value = '';
+
+            document.getElementById('user-info-page').classList.add('hidden');
+            document.getElementById('profile-page').classList.add('hidden');
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('register-page').classList.remove('hidden');
+        }
+
+        function showRegisterPage() {
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('register-page').classList.remove('hidden');
+        }
+
+        function showLoginPage() {
+            document.getElementById('register-page').classList.add('hidden');
+            document.getElementById('login-page').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
